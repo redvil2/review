@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    ports:
+      - '3032:5432'
+    volumes:
+      - './docker/postgres:/var/lib/postgresql/data'
+      - ./dockerfiles/init-dev-postgres.sh:/docker-entrypoint-initdb.d/init-dev-postgres.sh
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 1s
+      timeout: 1s
+      retries: 30
+
+  app-server:
+    build:
+      context: .
+      dockerfile: dockerfiles/server.Dockerfile
+      args:
+        - PACKAGE_NAME=app-server
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/app?schema=public
+    ports:
+      - '3034:3034'
+    depends_on:
+      - postgres
+      - app-prisma
+    networks:
+      - app-network
+
+  app-prisma:
+    build:
+      context: .
+      dockerfile: dockerfiles/tools.Dockerfile
+      args:
+        - PACKAGE_NAME=app-prisma
+    command: yarn migrate
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/app?schema=public
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+  app-client:
+    build:
+      context: .
+      dockerfile: dockerfiles/spa.Dockerfile
+      args:
+        - PACKAGE_NAME=app-client
+    ports:
+      - '4200:80'
+
+  website-landing:
+    build:
+      context: .
+      dockerfile: dockerfiles/gatsby.Dockerfile
+      args:
+        - PACKAGE_NAME=website-landing
+    ports:
+      - '4201:80'
+    profiles:
+      - donotstart
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "@app/shared-i18n",
+  "version": "0.0.0",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "i18next": "^23.2.11",
+    "i18next-browser-languagedetector": "^7.1.0",
+    "js-cookie": "^3.0.5",
+    "react-i18next": "^13.0.2"
+  }
+}

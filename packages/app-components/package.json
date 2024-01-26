@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "name": "@app/core-web-ui",
+  "version": "0.0.0",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "react-hook-form": "^7.45.2"
+  }
+}

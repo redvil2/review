@@ -1,0 +1,46 @@
+{
+  "private": true,
+  "name": "@app/websites-landing",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "yarn generate-languages && gatsby build",
+    "dev": "yarn generate-languages && gatsby develop",
+    "lint": "yarn generate-languages && eslint .",
+    "generate-languages": "yarn workspace @app/script-lang-generator generate $PWD/translations.csv $PWD/src/locales"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.7.1",
+    "@fontsource/jost": "^5.0.8",
+    "@fontsource/material-symbols-rounded": "5.0.16",
+    "classnames": "^2.3.2",
+    "framer-motion": "^10.12.16",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-helmet": "6.1.0",
+    "react-router-dom": "6.11.2"
+  },
+  "devDependencies": {
+    "@emotion/styled": "11.11.0",
+    "@svgr/webpack": "^8.1.0",
+    "@types/react": "18.2.14",
+    "@types/react-dom": "18.2.6",
+    "@types/react-helmet": "^6.1.6",
+    "@types/styled-components": "^5.1.27",
+    "babel-plugin-module-resolver": "5.0.0",
+    "babel-plugin-styled-components": "2.1.3",
+    "babel-preset-gatsby": "3.11.0",
+    "gatsby": "5.11.0",
+    "gatsby-plugin-image": "3.11.0",
+    "gatsby-plugin-manifest": "5.11.0",
+    "gatsby-plugin-offline": "6.11.0",
+    "gatsby-plugin-react-helmet": "6.11.0",
+    "gatsby-plugin-sharp": "5.11.0",
+    "gatsby-plugin-styled-components": "6.11.0",
+    "gatsby-plugin-svgr": "3.0.0-beta.0",
+    "gatsby-plugin-tsconfig-paths": "^1.0.6",
+    "gatsby-plugin-typescript": "^5.10.0",
+    "gatsby-source-filesystem": "5.11.0",
+    "gatsby-transformer-sharp": "5.11.0",
+    "styled-components": "5.3.6"
+  }
+}

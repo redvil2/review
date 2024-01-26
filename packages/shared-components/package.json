@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "name": "@app/shared-ui-components",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "sb dev",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "react-textarea-autosize": "^8.5.3"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "7.2.1",
+    "@storybook/addon-knobs": "^7.0.2",
+    "@storybook/addon-styling": "^1.0.8",
+    "@storybook/cli": "^7.5.3",
+    "@storybook/core-common": "^7.0.9",
+    "@storybook/core-server": "7.2.1",
+    "@storybook/react-vite": "7.2.1",
+    "@testing-library/react": "14.0.0"
+  }
+}

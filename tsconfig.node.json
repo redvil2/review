@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.base.json",
+  "ts-node": {
+    "require": ["tsconfig-paths/register"],
+    "esm": true,
+    "swc": true,
+    "transpileOnly": true,
+    "files": true
+  },
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "target": "ESNext",
+    "module": "CommonJS",
+    "outDir": "dist",
+    "sourceMap": true,
+    "inlineSources": true,
+    "sourceRoot": "/"
+  },
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}

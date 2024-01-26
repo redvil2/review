@@ -1,0 +1,6 @@
+# gatsby files
+.cache/
+public
+
+# generated files
+src/locales

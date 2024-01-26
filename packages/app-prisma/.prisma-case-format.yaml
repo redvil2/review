@@ -1,0 +1,9 @@
+# https://github.com/iiian/prisma-case-format#config-file
+default: >
+  table=pascal;
+  mapTable=snake,plural;
+  field=camel;
+  mapField=snake;
+  enum=pascal;
+  mapEnum=snake
+uses_next_auth: false

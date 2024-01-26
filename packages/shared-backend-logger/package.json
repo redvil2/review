@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "@app/shared-backend-logger",
+  "version": "0.0.0",
+  "main": "dist",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@sentry/node": "^7.88.0",
+    "ts-dotenv": "^0.9.1"
+  }
+}

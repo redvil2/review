@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "@app/prisma",
+  "version": "0.0.0",
+  "main": "src",
+  "scripts": {
+    "build": "prisma generate",
+    "create-migration": "dotenv -e ../../.env prisma migrate dev",
+    "format": "prisma-case-format -c .prisma-case-format.yaml -f prisma/schema.prisma",
+    "lint": "dotenv -e ../../.env prisma validate",
+    "migrate": "dotenv -e ../../.env prisma migrate deploy"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^7.3.0",
+    "prisma": "^5.6.0",
+    "prisma-case-format": "^2.1.0-beta.0"
+  },
+  "dependencies": {
+    "@prisma/client": "5.6.0"
+  }
+}

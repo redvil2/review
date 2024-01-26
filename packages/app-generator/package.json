@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "@app/app-generator",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@aws-sdk/client-ecs": "^3.451.0",
+    "@aws-sdk/client-s3": "^3.385.0",
+    "@aws-sdk/client-sns": "^3.451.0",
+    "@aws-sdk/lib-storage": "^3.385.0",
+    "@loskir/styled-qr-code-node": "^1.5.1",
+    "ts-dotenv": "^0.9.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.119",
+    "@types/node": "18.14.2"
+  }
+}

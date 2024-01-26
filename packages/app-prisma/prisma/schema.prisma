@@ -1,0 +1,463 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  mobilePhone  String?       @map("mobile_phone")
+  email        String?       @unique
+  wechatId     String?       @unique @map("wechat_id")
+  firstName    String?       @map("first_name")
+  lastName     String?       @map("last_name")
+  companyName  String?       @map("company_name")
+  userSettings UserSettings?
+
+  givenAccesses    Access[] @relation("GivingUser")
+  receivedAccesses Access[] @relation("ReceivingUser")
+
+  givenInvitations    Invitation[] @relation("InvitingUser")
+  receivedInvitations Invitation[] @relation("InvitedUser")
+
+  contactedBy Contact[] @relation("contactedBy")
+  contacts    Contact[] @relation("Contact")
+
+  teamMemberships TeamMembership[]
+  projects        Project[]
+  orders          Order[]
+  files           File[]
+  projectLogos    QrLogo[]
+  domainNames     DomainName[]
+
+  @@index([email])
+  @@index([wechatId])
+  @@index([mobilePhone])
+  @@map("users")
+}
+
+enum Language {
+  ENGLISH
+  CHINESE
+  GERMAN
+  FRENCH
+  SPANISH
+  DANISH
+  ITALIAN
+  PORTUGUESE
+  ROMANIAN
+  TURKISH
+
+  @@map("language")
+}
+
+enum CompanyType {
+  LABEL_CUSTOMER
+  PRINT_PROVIDER
+  SOLUTION_PROVIDER
+  OTHER
+
+  @@map("company_type")
+}
+
+model UserSettings {
+  id              Int          @id @default(autoincrement())
+  onboard         Boolean      @default(true)
+  onboardExtended Boolean      @default(true) @map("onboard_extended")
+  language        Language     @default(CHINESE)
+  country         String       @db.VarChar
+  companyType     CompanyType? @map("company_type")
+  position        String?      @db.VarChar
+
+  userId Int  @unique @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("user_settings")
+}
+
+model Contact {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  initiatorUserId Int  @map("initiator_user_id")
+  initiatorUser   User @relation("contactedBy", fields: [initiatorUserId], references: [id])
+
+  userId Int  @map("user_id")
+  user   User @relation("Contact", fields: [userId], references: [id])
+
+  @@unique([userId, initiatorUserId])
+  @@index([userId])
+  @@map("contacts")
+}
+
+enum TeamType {
+  B2B
+  SOLUTION_PROVIDER
+  PRINT_PROVIDER
+
+  @@map("team_type")
+}
+
+model Team {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name String
+  type TeamType
+
+  memberships TeamMembership[]
+  invitations Invitation[]
+  accesses    Access[]
+
+  @@index([name])
+  @@map("teams")
+}
+
+enum TeamMembershipRole {
+  OWNER
+  MANAGER
+  EDITOR
+  VIEWER
+
+  @@map("team_membership_role")
+}
+
+enum TeamMembershipStatus {
+  ACTIVE
+  INACTIVE
+
+  @@map("team_membership_status")
+}
+
+model TeamMembership {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  role        TeamMembershipRole
+  status      TeamMembershipStatus @default(ACTIVE)
+  description String?              @db.VarChar(64)
+
+  team   Team @relation(fields: [teamId], references: [id])
+  teamId Int  @map("team_id")
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  @@index([teamId])
+  @@index([userId])
+  @@map("team_memberships")
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+
+  @@map("invitation_status")
+}
+
+enum InvitationType {
+  TEAM
+  PROJECT
+
+  @@map("invitation_type")
+}
+
+model Invitation {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  recipientNumber String?            @map("recipient_number") @db.VarChar
+  recipientEmail  String?            @map("recipient_email") @db.VarChar
+  token           String?            @db.VarChar
+  membershipRole  TeamMembershipRole @default(VIEWER) @map("membership_role")
+  status          InvitationStatus   @default(PENDING)
+  type            InvitationType
+  accessType      AccessType         @default(WRITE) @map("access_type")
+  expiresAt       DateTime?          @map("expires_at")
+  sentAt          DateTime?          @map("sent_at")
+  acceptedAt      DateTime?          @map("accepted_at")
+  rejectedAt      DateTime?          @map("rejected_at")
+
+  team   Team? @relation(fields: [teamId], references: [id])
+  teamId Int?  @map("team_id")
+
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId Int?     @map("project_id")
+
+  invitingUserId Int  @map("inviting_user_id")
+  invitingUser   User @relation("InvitingUser", fields: [invitingUserId], references: [id])
+
+  invitedUserId Int?  @map("invited_user_id")
+  invitedUser   User? @relation("InvitedUser", fields: [invitedUserId], references: [id])
+
+  @@index([teamId])
+  @@index([projectId])
+  @@index([invitingUserId])
+  @@index([invitedUserId])
+  @@index([status])
+  @@index([token])
+  @@map("invitations")
+}
+
+enum AccessScope {
+  PROJECT
+  ORDER
+
+  @@map("access_scope")
+}
+
+enum AccessType {
+  READ
+  WRITE
+
+  @@map("access_type")
+}
+
+enum AccessReceiverType {
+  USER
+  TEAM
+
+  @@map("access_receiver_type")
+}
+
+model Access {
+  id             Int                @id @default(autoincrement())
+  createdAt      DateTime           @default(now()) @map("created_at")
+  updatedAt      DateTime           @updatedAt @map("updated_at")
+  furtherSharing Boolean            @default(false) @map("further_sharing")
+  accessScope    AccessScope        @map("access_scope")
+  accessType     AccessType         @map("access_type")
+  isOwner        Boolean            @default(false) @map("is_owner")
+  receiverType   AccessReceiverType @map("receiver_type")
+
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId Int     @map("project_id")
+
+  order   Order? @relation(fields: [orderId], references: [id])
+  orderId Int?   @map("order_id")
+
+  givingUserId Int  @map("giving_user_id")
+  givingUser   User @relation("GivingUser", fields: [givingUserId], references: [id])
+
+  receivingUserId Int?  @map("receiving_user_id")
+  receivingUser   User? @relation("ReceivingUser", fields: [receivingUserId], references: [id])
+
+  receivingTeamId Int?  @map("receiving_team_id")
+  receivingTeam   Team? @relation(fields: [receivingTeamId], references: [id])
+
+  @@index([projectId])
+  @@index([givingUserId])
+  @@index([receivingUserId])
+  @@index([receivingTeamId])
+  @@map("accesses")
+}
+
+model SmsCode {
+  id              Int      @id @default(autoincrement())
+  code            Int
+  createdAt       DateTime @default(now()) @map("created_at")
+  recipientNumber String   @map("recipient_number") @db.VarChar
+
+  @@index([createdAt], map: "idx_createdat")
+  @@map("sms_codes")
+}
+
+enum PrintingMethod {
+  OFFSET
+  FLEXO
+  DIGITAL
+  FLEXO_INKJET
+
+  @@map("printing_method")
+}
+
+enum Shape {
+  SQUARE
+  ROUND
+
+  @@map("shape")
+}
+
+enum ProjectType {
+  QR
+
+  @@map("project_type")
+}
+
+enum QrType {
+  SINGLE
+  SERIAL
+
+  @@map("qr_type")
+}
+
+model Project {
+  id             Int            @id @default(autoincrement())
+  createdAt      DateTime       @default(now()) @map("created_at")
+  title          String
+  article        String?
+  label          String?
+  labelCustomer  String?        @map("label_customer")
+  printProvider  String?        @map("print_provider")
+  type           ProjectType    @default(QR)
+  qrType         QrType         @map("qr_type")
+  printingMethod PrintingMethod @map("printing_method")
+  color          String
+  bgColor        String?        @map("bg_color")
+  shape          Shape
+  orders         Order[]
+  userId         Int            @map("user_id")
+  user           User           @relation(fields: [userId], references: [id])
+  files          File[]
+  logo           QrLogo?
+  accesses       Access[]
+  invitations    Invitation[]
+
+  qrDomainNameId Int?        @map("qr_domain_name_id")
+  qrDomainName   DomainName? @relation(fields: [qrDomainNameId], references: [id])
+
+  @@index([userId])
+  @@map("projects")
+}
+
+enum OrderStatus {
+  IDLE
+  PROCESSING
+
+  @@map("order_status")
+}
+
+model Order {
+  id          Int         @id @default(autoincrement())
+  createdAt   DateTime    @default(now()) @map("created_at")
+  orderLabel  String      @map("order_label")
+  orderId     Int         @map("order_id")
+  slug        String      @unique @default(dbgenerated("secure_id(6)"))
+  targetUrl   String?     @map("target_url")
+  fallbackUrl String?     @map("fallback_url")
+  amount      Int
+  unusableAmount      Int @default(0) @map("unusable_amount")
+  archived    Boolean     @default(false)
+  status      OrderStatus @default(IDLE)
+
+  qrCodesBucketName      String? @map("qr_codes_bucket_name")
+  qrCodesKey             String? @map("qr_codes_key")
+  qrCodesProgress        Int?    @map("qr_codes_progress")
+
+  projectId Int     @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id])
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
+
+  files  File[]
+  access Access[]
+
+  qrDomainNameId Int?        @map("qr_domain_name_id")
+  qrDomainName   DomainName? @relation(fields: [qrDomainNameId], references: [id])
+
+  @@index([projectId])
+  @@map("orders")
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name     String
+  s3Bucket String @map("s3_bucket")
+  s3Key    String @map("s3_key")
+  size     Int
+  type     String
+
+  orderId Int   @map("order_id")
+  order   Order @relation(fields: [orderId], references: [id])
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
+
+  projectId Int?     @map("project_id")
+  project   Project? @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
+  @@index([orderId])
+  @@index([userId])
+  @@map("files")
+}
+
+model QrLogo {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  s3Bucket String  @map("s3_bucket")
+  s3Key    String? @map("s3_key")
+  type     String
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
+
+  projectId Int?     @unique @map("project_id")
+  project   Project? @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
+  @@index([userId])
+  @@map("qr_logos")
+}
+
+enum DomainNameStatus {
+  VERIFICATION_PENDING
+  VERIFIED
+
+  @@map("domain_name_status")
+}
+
+enum DomainNameType {
+  CNAME
+  ROOT
+
+  @@map("domain_name_type")
+}
+
+model DomainName {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  lastUsedAt DateTime? @map("last_used_at")
+
+  type   DomainNameType   @default(CNAME)
+  value  String
+  status DomainNameStatus @default(VERIFICATION_PENDING)
+
+  cnameRecord           String?  @unique @map("cname_record")
+  hostedZoneId          String?  @map("hosted_zone_id")
+  certificateArn        String?  @map("certificate_arn")
+  validationRecordType  String?  @map("validation_record_type")
+  validationRecordName  String?  @map("validation_record_name")
+  validationRecordValue String?  @map("validation_record_value")
+  nameServers           String[] @map("name_servers")
+
+  ownerId Int?  @map("owner_id")
+  owner   User? @relation(fields: [ownerId], references: [id])
+
+  projects Project[]
+  orders   Order[]
+
+  @@unique([ownerId, value], name: "uniqueDomainNamePerUser")
+  @@index([value])
+  @@index([ownerId])
+  @@map("domain_names")
+}

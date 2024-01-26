@@ -1,0 +1,12 @@
+{
+  "presets": [
+    [
+      "babel-preset-gatsby",
+      {
+        "runtime": "automatic",
+        "importSource": "@emotion/react"
+      }
+    ]
+  ],
+  "plugins": []
+}

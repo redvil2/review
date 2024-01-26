@@ -1,0 +1,57 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "strict": true,
+    "lib": [
+      "es2020",
+      "dom"
+    ],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@prisma/client": [
+        "packages/app-prisma/client"
+      ],
+      "@app/core/trpc/router": [
+        "packages/app-server/src/trpc/router/index.ts"
+      ],
+      "@app/client/*": [
+        "packages/app-client/src/*"
+      ],
+      "@app/shared/i18n": [
+        "packages/shared-i18n/src/index.ts"
+      ],
+      "@app/shared/ui/components": [
+        "packages/shared-components/src/index.ts"
+      ],
+      "@app/shared-backend-logger": [
+        "packages/shared-backend-logger/src/index.ts"
+      ],
+      "@app/shared-lambda-logger": [
+        "packages/shared-lambda-logger/src/index.ts"
+      ],
+      "@app/shared/ui/theme": [
+        "packages/shared-theme/src/index.ts"
+      ],
+      "@app/core/web/ui": [
+        "packages/app-components/src/index.ts"
+      ],
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
+}

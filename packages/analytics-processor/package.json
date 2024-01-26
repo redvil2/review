@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "@app/analytics-processor",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "esbuild ./src/lambda.ts --bundle --minify --sourcemap --platform=node --target=node18 --outdir=dist",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "aws-lambda": "^1.0.7",
+    "pg": "^8.11.3",
+    "pg-promise": "^11.5.4",
+    "ts-dotenv": "^0.9.1",
+    "ulid": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.130",
+    "@types/node": "18.14.2",
+    "esbuild": "^0.19.8"
+  }
+}
