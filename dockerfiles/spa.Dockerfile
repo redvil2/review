@@ -42,7 +42,7 @@ COPY .git ../../.git
 
 RUN yarn build
 
-FROM nginx:alpine
+FROM nginx:1.25.4-alpine3.18
 
 ARG PACKAGE_NAME=app-client
 
