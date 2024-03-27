@@ -9,7 +9,7 @@
   "dependencies": {
     "aws-lambda": "^1.0.7",
     "pg": "^8.11.3",
-    "pg-promise": "^11.5.4",
+    "pg-promise": "^11.5.5",
     "ts-dotenv": "^0.9.1",
     "ulid": "^2.3.0"
   },
