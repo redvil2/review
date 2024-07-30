@@ -14,7 +14,7 @@
     "@aws-sdk/client-lambda": "^3.454.0",
     "@aws-sdk/client-route-53": "^3.385.0",
     "@aws-sdk/client-s3": "^3.385.0",
-    "@aws-sdk/client-ses": "^3.425.0",
+    "@aws-sdk/client-ses": "^3.529.0",
     "@aws-sdk/client-sqs": "^3.425.0",
     "@aws-sdk/lib-storage": "^3.385.0",
     "@aws-sdk/s3-request-presigner": "^3.385.0",
