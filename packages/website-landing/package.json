@@ -9,7 +9,7 @@
     "generate-languages": "yarn workspace @app/script-lang-generator generate $PWD/translations.csv $PWD/src/locales"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.7.1",
+    "@chakra-ui/react": "^2.9.0",
     "@fontsource/jost": "^5.0.8",
     "@fontsource/material-symbols-rounded": "5.0.16",
     "classnames": "^2.3.2",
