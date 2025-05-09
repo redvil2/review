@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@azure/msal-browser": "^2.38.0",
-    "@chakra-ui/react": "^2.7.1",
+    "@chakra-ui/react": "^2.9.0",
     "@dmatora/react-wechat-login": "^1.1.2",
     "@emotion/styled": "11.11.0",
     "@fontsource/jost": "^5.0.8",
